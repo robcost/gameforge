@@ -38,8 +38,8 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# GameForge runtime session data
-sessions/
+# GameForge runtime session data (root-level only)
+/sessions/
 
 # Environment variables
 .env
