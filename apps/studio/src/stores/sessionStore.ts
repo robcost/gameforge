@@ -83,6 +83,7 @@ const initialState: SessionState = {
   agentStates: {
     designer: 'idle',
     artist: 'idle',
+    musician: 'idle',
     developer: 'idle',
     qa: 'idle',
     orchestrator: 'idle',

@@ -16,6 +16,7 @@ describe('sessionStore', () => {
     expect(state.agentStates).toEqual({
       designer: 'idle',
       artist: 'idle',
+      musician: 'idle',
       developer: 'idle',
       qa: 'idle',
       orchestrator: 'idle',
@@ -129,6 +130,7 @@ describe('sessionStore', () => {
         agentStates: {
           designer: 'idle',
           artist: 'idle',
+          musician: 'idle',
           developer: 'working',
           qa: 'idle',
           orchestrator: 'idle',
@@ -162,6 +164,7 @@ describe('sessionStore', () => {
         agentStates: {
           designer: 'idle',
           artist: 'idle',
+          musician: 'idle',
           developer: 'idle',
           qa: 'idle',
           orchestrator: 'idle',
