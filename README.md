@@ -3,9 +3,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-green.svg)](https://nodejs.org/)
 
-AI-powered 2D game creation platform. Describe your game in plain English, watch an AI agent team build it collaboratively with live preview.
+AI-powered game creation platform. Describe your game in plain English, watch an AI agent team build it collaboratively with live preview. Supports 2D games with Phaser 3 and 3D games with Three.js.
 
-**GameForge is a learning repo** — it demonstrates how to build a multi-agent AI pipeline using the [Claude Agent SDK](https://docs.anthropic.com/en/docs/agents-and-tools/claude-agent-sdk) and [Google Gemini](https://ai.google.dev/) (Nano Banana for sprites, Lyria for music) to orchestrate a team of specialized AI agents that collaborate to produce working Phaser 3 games.
+**GameForge is a learning repo** — it demonstrates how to build a multi-agent AI pipeline using the [Claude Agent SDK](https://docs.anthropic.com/en/docs/agents-and-tools/claude-agent-sdk) and [Google Gemini](https://ai.google.dev/) (Nano Banana for sprites, Lyria for music) to orchestrate a team of specialized AI agents that collaborate to produce working Phaser 3 (2D) and Three.js (3D) games.
 
 ## What You Can Learn
 
@@ -14,7 +14,7 @@ AI-powered 2D game creation platform. Describe your game in plain English, watch
 - **Multi-agent orchestration** — designing pipelines where agents hand off work to each other
 - **Google Gemini Nano Banana** — generating game sprites and backgrounds from text descriptions
 - **Google Lyria** — composing background music via the RealTime WebSocket API
-- **Phaser 3 game development** — scaffolding, code generation, and live preview
+- **Phaser 3 + Three.js game development** — scaffolding, code generation, and live preview for 2D and 3D games
 - **Full-stack TypeScript** — Nx monorepo, Next.js, Express, WebSocket, Zustand
 
 ## How the AI Agent Pipeline Works
@@ -40,8 +40,8 @@ User Message
 └──────┬──────┘
        │
        ▼
-┌─────────────┐     Writes Phaser 3 TypeScript code using the GDD
-│  Developer   │     and generated assets via MCP file tools
+┌─────────────┐     Writes Phaser 3 or Three.js TypeScript code
+│  Developer   │     using the GDD and generated assets via MCP file tools
 └──────┬──────┘
        │
        ▼
@@ -77,7 +77,7 @@ apps/
 
 packages/
   shared-types/    TypeScript types shared across apps (messages, sessions, agents)
-  game-templates/  Phaser 3 starter templates for scaffolding
+  game-templates/  Phaser 3 and Three.js starter templates for scaffolding
 
 sessions/          Runtime game project data per session (gitignored)
 ```
@@ -177,7 +177,7 @@ npx nx graph
 
 - **Frontend:** Next.js 16 (App Router), Tailwind CSS, Zustand
 - **Backend:** Node.js, Express, WebSocket (ws), esbuild
-- **Game Engine:** Phaser 3
+- **Game Engines:** Phaser 3 (2D), Three.js (3D)
 - **AI:** Claude Agent SDK (TypeScript), Claude Opus
 - **Asset Generation:** Google Gemini Nano Banana (sprites, backgrounds)
 - **Music Generation:** Google Lyria RealTime API (background music)
