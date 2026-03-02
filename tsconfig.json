@@ -2,5 +2,21 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": []
+  "references": [
+    {
+      "path": "./packages/shared-types"
+    },
+    {
+      "path": "./packages/game-templates"
+    },
+    {
+      "path": "./apps/studio-e2e"
+    },
+    {
+      "path": "./apps/studio"
+    },
+    {
+      "path": "./apps/orchestrator"
+    }
+  ]
 }

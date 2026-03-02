@@ -1,0 +1,133 @@
+{
+  "name": "@robcost/orchestrator",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "orchestrator",
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "platform": "node",
+          "outputPath": "apps/orchestrator/dist",
+          "format": [
+            "cjs"
+          ],
+          "bundle": false,
+          "main": "apps/orchestrator/src/main.ts",
+          "tsConfig": "apps/orchestrator/tsconfig.app.json",
+          "esbuildOptions": {
+            "sourcemap": true,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        },
+        "configurations": {
+          "development": {},
+          "production": {
+            "esbuildOptions": {
+              "sourcemap": false,
+              "outExtension": {
+                ".js": ".js"
+              }
+            }
+          }
+        }
+      },
+      "prune-lockfile": {
+        "dependsOn": [
+          "build"
+        ],
+        "cache": true,
+        "executor": "@nx/js:prune-lockfile",
+        "outputs": [
+          "{workspaceRoot}/apps/orchestrator/dist/package.json",
+          "{workspaceRoot}/apps/orchestrator/dist/package-lock.json"
+        ],
+        "options": {
+          "buildTarget": "build"
+        }
+      },
+      "copy-workspace-modules": {
+        "dependsOn": [
+          "build"
+        ],
+        "cache": true,
+        "outputs": [
+          "{workspaceRoot}/apps/orchestrator/dist/workspace_modules"
+        ],
+        "executor": "@nx/js:copy-workspace-modules",
+        "options": {
+          "buildTarget": "build"
+        }
+      },
+      "prune": {
+        "dependsOn": [
+          "prune-lockfile",
+          "copy-workspace-modules"
+        ],
+        "executor": "nx:noop"
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "orchestrator:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "orchestrator:build:development"
+          },
+          "production": {
+            "buildTarget": "orchestrator:build:production"
+          }
+        }
+      },
+      "dev": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "orchestrator:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "orchestrator:build:development"
+          },
+          "production": {
+            "buildTarget": "orchestrator:build:production"
+          }
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.2.50",
+    "@google/genai": "^1.42.0",
+    "cors": "^2.8.6",
+    "express": "^4.21.2",
+    "playwright": "^1.52.0",
+    "sharp": "^0.34.5",
+    "ws": "^8.19.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/ws": "^8.18.1"
+  }
+}

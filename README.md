@@ -1,106 +1,198 @@
-# New Nx Repository
+# GameForge - Agentic Game Creator
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-green.svg)](https://nodejs.org/)
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+AI-powered 2D game creation platform. Describe your game in plain English, watch an AI agent team build it collaboratively with live preview.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-## Finish your Nx platform setup
+**GameForge is a learning repo** — it demonstrates how to build a multi-agent AI pipeline using the [Claude Agent SDK](https://docs.anthropic.com/en/docs/agents-and-tools/claude-agent-sdk) and [Google Gemini](https://ai.google.dev/) (Nano Banana for sprites, Lyria for music) to orchestrate a team of specialized AI agents that collaborate to produce working Phaser 3 games.
 
-🚀 [Finish setting up your workspace](https://cloud.nx.app/connect/sxm7RJ5koq) to get faster builds with remote caching, distributed task execution, and self-healing CI. [Learn more about Nx Cloud](https://nx.dev/ci/intro/why-nx-cloud).
-## Generate a library
+## What You Can Learn
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
-```
+- **Claude Agent SDK patterns** — programmatic agent control, subagents, structured tool use
+- **MCP tool servers** — building custom Model Context Protocol tools for agent capabilities
+- **Multi-agent orchestration** — designing pipelines where agents hand off work to each other
+- **Google Gemini Nano Banana** — generating game sprites and backgrounds from text descriptions
+- **Google Lyria** — composing background music via the RealTime WebSocket API
+- **Phaser 3 game development** — scaffolding, code generation, and live preview
+- **Full-stack TypeScript** — Nx monorepo, Next.js, Express, WebSocket, Zustand
 
-## Run tasks
+## How the AI Agent Pipeline Works
 
-To build the library use:
-
-```sh
-npx nx build pkg1
-```
-
-To run any task with Nx use:
-
-```sh
-npx nx <target> <project-name>
-```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
+When a user describes a game in the chat, the orchestrator runs a sequential pipeline of specialized agents:
 
 ```
-npx nx release
+User Message
+    │
+    ▼
+┌─────────────┐     Creates a Game Design Document (GDD)
+│  Designer    │     with mechanics, art direction, and audio specs
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐     Generates sprites and backgrounds via
+│  Artist      │     Google Gemini Nano Banana (runs if GDD has artDirection)
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐     Composes background music via Google Lyria
+│  Musician    │     RealTime API (runs if GDD has musicDirection)
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐     Writes Phaser 3 TypeScript code using the GDD
+│  Developer   │     and generated assets via MCP file tools
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐     Launches the game in Playwright, captures
+│  QA          │     screenshots, reports bugs back to the user
+└──────┬──────┘
+       │
+       ▼
+  User Feedback → loops back to Designer for iteration
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+Each agent uses the Claude Agent SDK with custom MCP tool servers. The orchestrator manages conversation context so agents can see prior work and iterate based on QA feedback.
 
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Key Files to Study
 
-## Keep TypeScript project references up to date
+| File | What It Demonstrates |
+|---|---|
+| [`apps/orchestrator/src/agents/teamOrchestrator.ts`](apps/orchestrator/src/agents/teamOrchestrator.ts) | Pipeline orchestration — how agents are sequenced and handed context |
+| [`apps/orchestrator/src/tools/gameToolServer.ts`](apps/orchestrator/src/tools/gameToolServer.ts) | MCP tool server — custom file tools that agents use to read/write game code |
+| [`apps/orchestrator/src/agents/prompts/`](apps/orchestrator/src/agents/prompts/) | Agent system prompts — how each agent role is defined |
+| [`apps/orchestrator/src/assets/assetGenerator.ts`](apps/orchestrator/src/assets/assetGenerator.ts) | Gemini Nano Banana integration — text-to-image generation for game sprites |
+| [`apps/orchestrator/src/music/musicGenerator.ts`](apps/orchestrator/src/music/musicGenerator.ts) | Lyria RealTime API — WebSocket streaming for music composition |
+| [`apps/orchestrator/src/tools/assetToolServer.ts`](apps/orchestrator/src/tools/assetToolServer.ts) | MCP tools for asset generation — `generate_asset`, `get_asset_status` |
+| [`apps/orchestrator/src/tools/musicToolServer.ts`](apps/orchestrator/src/tools/musicToolServer.ts) | MCP tools for music generation — `generate_music`, `get_music_status` |
+| [`docs/research/`](docs/research/) | API research notes — Claude Agent SDK, Gemini Nano Banana, Lyria, Phaser, Three.js |
 
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
+## Architecture
 
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
+```
+apps/
+  studio/          Next.js 16 frontend (port 4001) — chat + game preview
+  orchestrator/    Express + WebSocket backend (port 4000) — AI agent pipeline
 
-```sh
-npx nx sync
+packages/
+  shared-types/    TypeScript types shared across apps (messages, sessions, agents)
+  game-templates/  Phaser 3 starter templates for scaffolding
+
+sessions/          Runtime game project data per session (gitignored)
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+## Quick Start
 
-```sh
-npx nx sync:check
+### Prerequisites
+
+- Node.js 20+
+- npm 10+
+- An `ANTHROPIC_API_KEY` for Claude (required)
+- A `GOOGLE_AI_API_KEY` for asset/music generation (optional)
+
+### Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Copy environment variables
+cp .env.example .env.local
+# Edit .env.local and set ANTHROPIC_API_KEY (and optionally GOOGLE_AI_API_KEY)
+
+# Build shared packages
+npx nx run-many -t build --projects=shared-types,game-templates
 ```
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+### Development
 
-## Nx Cloud
+Run the orchestrator and studio in separate terminals:
 
-Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+```bash
+# Terminal 1 — Orchestrator backend
+npx nx serve orchestrator
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Set up CI (non-Github Actions CI)
-
-**Note:** This is only required if your CI provider is not GitHub Actions.
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
+# Terminal 2 — Studio frontend
+npx nx dev studio
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Then open http://localhost:4001 in your browser.
 
-## Install Nx Console
+### Docker
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+```bash
+# Start all services
+docker-compose up
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+# Start with E2E test runner
+docker-compose --profile e2e up
+```
 
-## Useful links
+Health checks are configured for both services. The studio waits for the orchestrator to be healthy before starting.
 
-Learn more:
+## Environment Variables
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+| Variable | Required | Description |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | Yes | Claude API key for the AI agent pipeline |
+| `GOOGLE_AI_API_KEY` | No | Google AI API key — enables Artist (Nano Banana) and Musician (Lyria) agents |
+| `ORCHESTRATOR_PORT` | No | Orchestrator HTTP/WS port (default: 4000) |
+| `STUDIO_PORT` | No | Studio frontend port (default: 4001) |
+| `NEXT_PUBLIC_ORCHESTRATOR_URL` | No | Studio → orchestrator REST URL (default: http://localhost:4000) |
+| `NEXT_PUBLIC_ORCHESTRATOR_WS_URL` | No | Studio → orchestrator WebSocket URL (default: ws://localhost:4000) |
 
-And join the Nx community:
+## Testing
 
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Tests are mandatory for all code. Run them with:
+
+```bash
+# All tests
+npx nx run-many -t test
+
+# Single project
+npx nx test studio
+npx nx test orchestrator
+npx nx test shared-types
+npx nx test game-templates
+
+# Type checking
+npx nx run-many -t typecheck
+```
+
+## Building
+
+```bash
+# Build all projects
+npx nx run-many -t build
+
+# Build specific project
+npx nx build orchestrator
+
+# View the project dependency graph
+npx nx graph
+```
+
+## Tech Stack
+
+- **Frontend:** Next.js 16 (App Router), Tailwind CSS, Zustand
+- **Backend:** Node.js, Express, WebSocket (ws), esbuild
+- **Game Engine:** Phaser 3
+- **AI:** Claude Agent SDK (TypeScript), Claude Opus
+- **Asset Generation:** Google Gemini Nano Banana (sprites, backgrounds)
+- **Music Generation:** Google Lyria RealTime API (background music)
+- **Build:** Nx monorepo, Vite (game projects)
+- **Testing:** Vitest (unit/integration), Playwright (QA + E2E)
+
+## Documentation
+
+- [`docs/research/`](docs/research/) — API research notes on Claude Agent SDK, Gemini Nano Banana, Lyria, Phaser 3, Three.js
+- [`docs/demo-walkthrough.md`](docs/demo-walkthrough.md) — Step-by-step walkthrough of a demo session
+
+## Build Journey
+
+This project was built iteratively in phases. See [`tasks/todo.md`](tasks/todo.md) for the full phase-by-phase development log, and [`tasks/lessons.md`](tasks/lessons.md) for lessons learned during the build.
+
+## License
+
+[MIT](LICENSE)

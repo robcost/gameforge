@@ -1,0 +1,31 @@
+# Environment and secrets
+.env
+.env.local
+.env.*
+
+# Runtime data
+sessions/
+node_modules/
+
+# Build artifacts
+dist/
+.next/
+out/
+tmp/
+
+# Git and tooling
+.git/
+.nx/
+.claude/
+.vscode/
+.github/
+
+# Documentation (not needed in Docker image)
+docs/
+tasks/
+*.md
+!README.md
+
+# Test output
+coverage/
+test-output/

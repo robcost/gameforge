@@ -1,0 +1,62 @@
+services:
+  orchestrator:
+    build:
+      context: .
+      dockerfile: apps/orchestrator/Dockerfile.dev
+    env_file: .env.local
+    ports:
+      - "${ORCHESTRATOR_PORT:-4000}:4000"
+    volumes:
+      - .:/workspace
+      - /workspace/node_modules
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+      - ORCHESTRATOR_PORT=4000
+    command: npx nx serve orchestrator
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  studio:
+    build:
+      context: .
+      dockerfile: apps/studio/Dockerfile.dev
+    env_file: .env.local
+    ports:
+      - "${STUDIO_PORT:-4001}:4001"
+    volumes:
+      - .:/workspace
+      - /workspace/node_modules
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+      - HOSTNAME=0.0.0.0
+      - PORT=4001
+      - NEXT_PUBLIC_ORCHESTRATOR_URL=http://orchestrator:4000
+      - NEXT_PUBLIC_ORCHESTRATOR_WS_URL=ws://orchestrator:4000
+    command: npx nx dev studio
+    depends_on:
+      orchestrator:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4001"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.52.0-noble
+    profiles:
+      - e2e
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    depends_on:
+      studio:
+        condition: service_healthy

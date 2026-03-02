@@ -1,0 +1,17 @@
+{
+  "name": "gameforge-game",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "typescript": "~5.7.2",
+    "vite": "^6.3.0"
+  }
+}

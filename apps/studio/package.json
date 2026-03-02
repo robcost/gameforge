@@ -1,0 +1,36 @@
+{
+  "name": "@robcost/studio",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "studio",
+    "targets": {
+      "dev": {
+        "options": {
+          "port": 4001
+        }
+      },
+      "build": {
+        "options": {
+          "env": {
+            "NODE_ENV": "production"
+          }
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "next": "~16.0.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-markdown": "^9.1.0",
+    "remark-gfm": "^4.0.1",
+    "zustand": "^5.0.11"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@vitejs/plugin-react": "^5.1.4",
+    "jsdom": "^28.1.0"
+  }
+}
